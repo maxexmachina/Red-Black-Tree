@@ -11,7 +11,17 @@ struct tree {
     struct tree* parent;
 };
 
-class redBlack {
+class Container {
+public:
+    virtual void insert(int value) = 0;
+    virtual bool exists(int value) = 0;
+    virtual void remove(int value) = 0;
+    virtual void print() { }
+
+    virtual ~Container() = default;
+};
+
+class redBlack : public Container {
 private:
     struct tree* mainRoot = nullptr;
 
@@ -25,14 +35,14 @@ private:
         return temp;
     }
 
-    struct tree* grandpa(struct tree* root) {
+    struct tree* grandpa(const struct tree* root) const {
         if (root and root->parent)
             return root->parent->parent;
         else
             return nullptr;
     }
 
-    struct tree* uncle(struct tree* root) {
+    struct tree* uncle(const struct tree* root) const {
         struct tree* g = grandpa(root);
         if (g == nullptr)
             return nullptr;
@@ -43,14 +53,14 @@ private:
 
     }
 
-    struct tree* sibling(struct tree* root) {
+    struct tree* sibling(const struct tree* root) const {
         if (root == root->parent->left)
             return root->parent->right;
         else
             return root->parent->left;
     }
 
-    void rot_left(struct tree* root) {
+    void rot_left(struct tree* root) const {
         struct tree* pivot = root->right;
 
         pivot->parent = root->parent;
@@ -69,7 +79,7 @@ private:
         pivot->left = root;
     }
 
-    void rot_right(struct tree* root) {
+    void rot_right(struct tree* root) const {
         struct tree* pivot = root->left;
 
         pivot->parent = root->parent;
@@ -118,7 +128,7 @@ private:
         }
     }
 
-    void replace_child(struct tree* root, struct tree* child) {
+    void replace_child(struct tree* root, struct tree* child) const {
         struct tree* s = sibling(child);
         if (s != nullptr) {
             s->parent = child;
@@ -136,7 +146,7 @@ private:
         }
     }
 
-    void delete_case6(struct tree* root) {
+    void delete_case6(struct tree* root) const {
         struct tree* s = sibling(root);
 
         s->colour = root->parent->colour;
@@ -150,7 +160,7 @@ private:
         }
     }
 
-    void delete_case5(struct tree* root) {
+    void delete_case5(struct tree* root) const {
         struct tree* s = sibling(root);
 
         if (s->colour == BLACK) {
@@ -167,7 +177,7 @@ private:
         delete_case6(root);
     }
 
-    struct tree* delete_case4(struct tree* root) {
+    struct tree* delete_case4(struct tree* root) const {
         struct tree* s = sibling(root);
 
         if ((root->parent->colour == RED) and (s->colour == BLACK) and (s->left->colour == BLACK) and (s->right->colour == BLACK)) {
@@ -177,7 +187,7 @@ private:
             delete_case5(root);
     }
 
-    void delete_case3(struct tree* root) {
+    void delete_case3(struct tree* root) const {
         struct tree* s = sibling(root);
 
         if ((root->parent->colour == BLACK) and (s->colour == BLACK) and (s->left->colour == BLACK) and (s->right->colour = BLACK)) {
@@ -187,7 +197,7 @@ private:
             delete_case4(root);
     }
 
-    void delete_case2(struct tree* root) {
+    void delete_case2(struct tree* root) const {
         struct tree* s = sibling(root);
 
         if(s->colour == RED) {
@@ -201,7 +211,7 @@ private:
         delete_case3(root);
     }
 
-    void delete_case1(struct tree* root) {
+    void delete_case1(struct tree* root) const {
         if (root->parent != nullptr)
             delete_case2(root);
     }
@@ -237,7 +247,7 @@ private:
         }
     }
 
-    struct tree* insert_case5(struct tree* root) {
+    struct tree* insert_case5(struct tree* root) const {
         struct tree* g = grandpa(root);
 
         root->parent->colour = BLACK;
@@ -254,7 +264,7 @@ private:
         return tmp;
     }
 
-    struct tree* insert_case4(struct tree* root) {
+    struct tree* insert_case4(struct tree* root) const {
         struct tree* g = grandpa(root);
 
         if ((root == root->parent->right and root->parent == g->left)) {
@@ -272,7 +282,7 @@ private:
         return tmp;
     }
 
-    struct tree* insert_case3(struct tree* root) {
+    struct tree* insert_case3(struct tree* root) const {
         struct tree* u = uncle(root),  *g;
 
         if ((u != nullptr) and (u->colour == RED)) {
@@ -291,7 +301,7 @@ private:
         return tmp;
     }
 
-    struct tree* insert_case2(struct tree* root) {
+    struct tree* insert_case2(struct tree* root) const {
         struct tree* tmp = root;
         if (root->parent->colour == BLACK) {
             while (tmp->parent != nullptr) {
@@ -307,7 +317,7 @@ private:
         return tmp;
     }
 
-    struct tree* insert_case1(struct tree* root) {
+    struct tree* insert_case1(struct tree* root) const {
         struct tree* tmp = root;
         if (root->parent == nullptr) {
             root->colour = BLACK;
@@ -357,7 +367,7 @@ private:
         }
     }
 
-    void printerFull(const struct tree* root) {
+    void printerFull(const struct tree* root) const {
         if(root != nullptr) {
             std::cout << "Value: " << root->a << "(" << root->colour << "), ";
             std::cout << "Left: ";
@@ -367,7 +377,7 @@ private:
         }
     }
 
-    void printer(const struct tree* root) {
+    void printer(const struct tree* root) const{
         if (root) {
             std::cout << root->a << ", ";
             printer(root->left);
@@ -376,59 +386,69 @@ private:
     }
 
 public:
-    void insert(int value) {
+    void insert(int value) override {
             mainRoot = insert_case1(inserter(mainRoot, value));
     }
 
-    bool exists(int value) {
+    bool exists(int value) override {
         if(locate(mainRoot, value))
             return true;
         else
             return false;
     }
 
-    void remove(int value) {
+    void remove(int value) override {
         if(exists(value))
         mainRoot = delete_node(locate(mainRoot, value));
     }
 
-    void print() {
+    void printSome() {
             printer(mainRoot);
         }
 
-    void printFull() {
+    void print() override {
         printerFull(mainRoot);
         }
 
-    ~redBlack() {
+    ~redBlack() override {
         std::cout << "Destructor called" << std::endl;
     }
 };
 
 
 int main() {
+
     int N;
     std::cin >> N;
     int* array = new int[N];
     for (int i = 0; i < N; i++) {
         std::cin >> array[i];
     }
-    redBlack rb;
+    Container* rb = new redBlack;
     for (int i = 0; i < N; i++) {
-        rb.insert(array[i]);
-        rb.printFull();
+        rb->insert(array[i]);
+        rb->print();
         std::cout << std::endl;
     }
+    /*Container* rb = new redBlack;
+    for(int i = 1; i < 10; i++)
+        rb->insert(i*i);
+    rb->print();
 
-    std::cout << std::endl;
-    rb.remove(3);
-    rb.printFull();
+    if(rb->exists(25))
+        std::cout << "The value of 25 has been found" << std::endl;
+
+    rb->remove(25);*/
+
+    //std::cout << std::endl;
+    //rb.remove(3);
+    //rb->print();
     std::cout << std::endl;
 
     //std::cout << root->left->parent->a << std::endl;
 
-    delete[] array;
-
+    //delete[] array;
+    delete rb;
     return 0;
 }
 
