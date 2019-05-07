@@ -83,10 +83,12 @@ private:
         struct tree* pivot = root->left;
 
         pivot->parent = root->parent;
-        if (root->parent->right == root)
-            root->parent->right = pivot;
-        else
-            root->parent->left = pivot;
+        if (root->parent != nullptr) {
+            if (root->parent->right == root)
+                root->parent->right = pivot;
+            else
+                root->parent->left = pivot;
+        }
 
         root->left = pivot->right;
         if (pivot->right != nullptr)
@@ -270,7 +272,7 @@ private:
         if ((root == root->parent->right and root->parent == g->left)) {
             rot_left(root->parent);
             root = root->left;
-        } else if ((root == root->parent->left) and (root->parent = g->right)) {
+        } else if ((root == root->parent->left) and (root->parent == g->right)) {
             rot_right(root->parent);
             root = root->right;
         }
@@ -411,6 +413,7 @@ public:
         }
 
     ~redBlack() override {
+        delete mainRoot;
         std::cout << "Destructor called" << std::endl;
     }
 };
@@ -440,14 +443,14 @@ int main() {
 
     rb->remove(25);*/
 
-    //std::cout << std::endl;
-    //rb.remove(3);
-    //rb->print();
+    std::cout << std::endl;
+    rb->remove(24);
+    rb->print();
     std::cout << std::endl;
 
     //std::cout << root->left->parent->a << std::endl;
 
-    //delete[] array;
+    delete[] array;
     delete rb;
     return 0;
 }
