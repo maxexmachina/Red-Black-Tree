@@ -25,6 +25,15 @@ public:
 };
 
 template<typename T>
+void cleanUp(struct tree<T>* root) {
+    if(root->left != nullptr)
+        cleanUp(root->left);
+    if(root->right != nullptr)
+        cleanUp(root->right);
+    delete root;
+}
+
+template<typename T>
 class redBlack : public Container<T> {
 private:
     struct tree<T>* mainRoot = nullptr;
@@ -417,7 +426,7 @@ public:
         }
 
     ~redBlack() override {
-        delete mainRoot;
+        cleanUp(mainRoot);
         std::cout << "Destructor called" << std::endl;
     }
 };
