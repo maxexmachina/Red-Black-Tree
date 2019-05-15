@@ -3,4 +3,4 @@ project(ObjectTree)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(ObjectTree main.cpp)
+add_executable(ObjectTree main.cpp rbTree.h rbTree.cpp)
