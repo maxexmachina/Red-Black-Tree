@@ -18,7 +18,7 @@ int main() {
     }
 
     std::cout << std::endl;
-    rb->remove(23.5);
+    rb->remove(42.2);
     rb->print();
     std::cout << std::endl;
 

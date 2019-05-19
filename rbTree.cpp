@@ -101,6 +101,7 @@ void cleanUp(struct tree<T>* root) {
         struct tree<T>* tmp = create(value);
 
         if (root == nullptr) {
+            delete tmp;
             return nullptr;
         }
         else {
@@ -109,22 +110,29 @@ void cleanUp(struct tree<T>* root) {
                 return tmp;
             }
             if(value < root->a) {
-                if(root->left == nullptr)
+                if(root->left == nullptr) {
+                    delete tmp;
                     return nullptr;
+                }
                 else {
                     tmp = locate(root->left, value);
                     return tmp;
                 }
             }
             else if(value > root->a) {
-                if(root->right == nullptr)
+                if(root->right == nullptr) {
+                    delete tmp;
                     return nullptr;
+                }
                 else {
                     tmp = locate(root->right, value);
                     return tmp;
                 }
             }
-            else return nullptr;
+            else {
+                delete tmp;
+                return nullptr;
+            }
         }
     }
 
@@ -355,7 +363,6 @@ void cleanUp(struct tree<T>* root) {
         else {
             if(value < root->a) {
                 if(root->left == nullptr) {
-
                     root->left = tmp;
                     tmp->parent = root;
                     return tmp;
@@ -376,7 +383,10 @@ void cleanUp(struct tree<T>* root) {
                     return tmp;
                 }
             }
-            else return nullptr;
+            else {
+                delete tmp;
+                return nullptr;
+            }
         }
     }
 
@@ -407,7 +417,7 @@ void cleanUp(struct tree<T>* root) {
 
     template<typename T>
     bool redBlack<T>::exists(T value) {
-        if(locate(mainRoot, value))
+        if(locate(mainRoot, value) != nullptr)
             return true;
         else
             return false;

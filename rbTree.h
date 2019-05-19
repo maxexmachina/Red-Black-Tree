@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include "Container.h"
 
 template<typename T>
 struct tree {
@@ -15,20 +16,6 @@ struct tree {
     struct tree* left;
     struct tree* right;
     struct tree* parent;
-};
-
-template<typename T>
-class Container {
-public:
-    virtual void insert(T value) = 0;
-
-    virtual bool exists(T value) = 0;
-
-    virtual void remove(T value) = 0;
-
-    virtual void print() { }
-
-    virtual ~Container() = default;
 };
 
 template<typename T>
